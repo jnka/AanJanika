@@ -11,3 +11,5 @@ sobi, pööratakse nad laual ümber (pilt allpool) ja mängija saab valida uuesti ka
 
 
 
+
+
