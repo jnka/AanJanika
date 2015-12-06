@@ -15,7 +15,7 @@ public class Mang {
         System.out.println("START MÄNG"); //Prindime välja teksti "START MÄNG"
 
         // Loome objektid Laud ja Pilt:
-        Laud laud = new Laud (4); //Genereerime laua ruudustiku 4x4
+        Laud() = new Laud [4][4]; //Ei saa tööle seda!
         //Mangija mangija = new Mangija();
 
         //mängu töös hoidmine
