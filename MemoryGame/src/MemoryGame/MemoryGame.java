@@ -1,13 +1,25 @@
 package MemoryGame;
 
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+
+
 /**
  * Created by janikaa on 4.12.2015.
  */
-public class MemoryGame {
-    public static void main(String[] args) {//Main meetod
-        new Mang(); // käivitame mängu
-        // Ideaalis siia klassi rohkem midagi ei tee, sest igal koodijupil on oma ülesanne, mis omakorda käivitatakse oma klassis
+public class MemoryGame extends Application{
+    Stage lava;
+    @Override
+    public void  start(Stage primaryStage) throws Exception{
+        new Laud();
+
+
     }
+
+
+
+
 }
 
 

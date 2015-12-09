@@ -1,45 +1,51 @@
 package MemoryGame;
 
-import java.util.Random;
-import java.util.Scanner;
+
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 /**
  * Created by janikaa on 4.12.2015.
  */
 public class Laud {
-    private Pilt[][] pildid;
-    //private String[] sõnad ={"esimene", "teine", "kolmas", "neljas", "viies", "kuues", "seitsmes", "kaheksas"};
-    private Random r;
-    private Scanner lugeja;
+    GridPane laud;
+    StackPane maailm;
+    Stage programmiAken = new Stage();
+    int laualTulpasid = 4;
+    int laualRidasid = 4;
+    int ruuduKylg = 50;
+
 
     Laud(){
-        r=new Random();
-        lugeja=new Scanner(System.in);
-        pildid = new Pilt[4][4];
-        System.out.println(pildid);
-    }
-  //  private int lauaServaPikkus;//salvestab klassi külge ja siis saab seda tsüklites kasutada edaspidi üle terve klassi;
-   // private Pilt[]pildid = new Pilt[2]; //"[]" - tähistab massiivi, tuleb 16 pilti (4x4);
-    //Klass ei oska vastu võtta parameetrit, sellepärast ongi vaja konstruktorit;
+    programmiAken.setTitle("Memoriin");
+        System.out.println("Olen Laua juurde jõudnud!");
+        seadistaStseen();
+        //genereeriPildid();
+        //reageeriKlikile();
 
-  /*  public Laud (int pikkus) {//Loome konstruktori "Laud";
-        System.out.println("START LAUD");//Kui käivitan programmi, saan kontrollida, kas ta on siia jõudnud
-        lauaServaPikkus = pikkus;//Salvestame pikkuse
-        looPildid();
+        programmiAken.show(); //Näita Mängu
     }
 
-    private void looPildid() {//Laua käes on pildid, salvestame pildid laua külge:
-        for (int i = 0; i < pildid.length; i++) {
-            pildid[i] = new Pilt(lauaServaPikkus);
-        }
+    private void seadistaStseen() {
+        int piksleidLai = laualTulpasid * ruuduKylg;
+        int piksleidKorge = laualRidasid * ruuduKylg;
+        maailm = new StackPane();
+        Rectangle taust = new Rectangle(piksleidLai, piksleidKorge);
+        taust.setFill(Color.BLUE);
+        maailm.getChildren().add(taust);
+
+        laud = new GridPane();
+        maailm.getChildren().add(laud);
+
+        Scene scene = new Scene(maailm, piksleidKorge, piksleidLai);
+        programmiAken.setScene(scene);
+        programmiAken.setOnCloseRequest(event -> System.exit(0));
+        System.out.println("Olen Stseeni seadistamise juurde jõudnud!");
     }
-    public boolean kasPilteOnAlles(){
-        for (Pilt pilt : pildid){
-            boolean arvamata = pilt.kasOledArvamata();//küsib iga pildi käest
-            if (arvamata){
-                return true;
-            }
-        }
-        return false;
-    }*/
+
+
 }
