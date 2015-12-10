@@ -3,23 +3,17 @@ package MemoryGame;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-
-
 /**
- * Created by janikaa on 4.12.2015.
+ * Created by janikaa on 10.12.2015.
  */
+public class MemoryGame extends Application {
+    //Stage mang;//klassimuutuja, klassis igalpool kättesaadav
 
-
-public class MemoryGame extends Application{
-    //Stage Mang;
-
-   @Override //märge, mis ütleb, et käesolev meetod on super klassist (Application) üle kirjutatud.
-    public void  start(Stage primaryStage) throws Exception{
-       new Mang();//käivitame mängu, siia saab hiljem uusi mängijaid luua, uusi Mange lisades
-   }
-
+    @Override //märge, mis ütleb, et käesolev meetod on super klassist (Application) üle kirjutatud.
+    public void start(Stage primaryStage) throws Exception {
+        new Mang();//käivitame mängu, siia saab hiljem uusi mängijaid luua, uusi Mange lisades
+    }
 }
-
 
 /*
 *Iga klass või objekt: 1) hoiab mingit infot (teab infot, muutuja); 2) teeb midagi (oskab midagi teha, meetod).
@@ -55,4 +49,3 @@ public class MemoryGame extends Application{
 *    VIITED ALLIKALE:
 *    Objektorienteerituse loeng, Krister Viirsaar,
 */
-
