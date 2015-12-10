@@ -8,17 +8,15 @@ import javafx.stage.Stage;
 /**
  * Created by janikaa on 4.12.2015.
  */
+
+
 public class MemoryGame extends Application{
-    Stage lava;
-    @Override
+    //Stage Mang;
+
+   @Override //märge, mis ütleb, et käesolev meetod on super klassist (Application) üle kirjutatud.
     public void  start(Stage primaryStage) throws Exception{
-        new Laud();
-
-
-    }
-
-
-
+       new Mang();//käivitame mängu, siia saab hiljem uusi mängijaid luua, uusi Mange lisades
+   }
 
 }
 
@@ -27,9 +25,9 @@ public class MemoryGame extends Application{
 *Iga klass või objekt: 1) hoiab mingit infot (teab infot, muutuja); 2) teeb midagi (oskab midagi teha, meetod).
 * Meie mängus "Memoriin" (MemoryGame) on 5 klassi:
 *
-* MemoryGame ehk Main (1)
+* MemoryGame ehk Main
 *   Oskab mängu käivitada
-* Mang (2)
+* Mang (Stage)
 *    Oskab mängu seadistada
 *    Oskab mängu töös hoida
 *    Oskab mängu lõpetada

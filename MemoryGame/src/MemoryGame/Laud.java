@@ -2,50 +2,56 @@ package MemoryGame;
 
 
 import javafx.scene.Scene;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+
+
 
 /**
  * Created by janikaa on 4.12.2015.
  */
 public class Laud {
-    GridPane laud;
-    StackPane maailm;
-    Stage programmiAken = new Stage();
-    int laualTulpasid = 4;
-    int laualRidasid = 4;
-    int ruuduKylg = 50;
+    Stage mang; //programmi aken, kuhu peale ehitame mängu; klassimuutuja, klassis igalpool kättesaadav
+    GridPane laud; //asetab elemendid ruudustiku järgi tabelisse;
+    int pildiKylg = 150; //pildi küljepikkus
+    int laualTulpasid = 4; //tulpade arv mängulaual
+    int laualRidasid = 4; //ridade arv mängulaual
+    int piltideVahe = 5; //piltidel on vahed
+    int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVahe);//see on sellepärast selline, et mahuks aknasse ära, vaatame mingi parema lahenduse
+    int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVahe);
+    FlowPane flow = new FlowPane(laud);//Paigutab elemendid vasakult paremale, katkeb järgmisele reale, kui sisu enam ära ei mahu
 
+    public Laud(){
+        mang = new Stage();
+        laud = new GridPane();
+        Scene manguStseen = new Scene(laud, piksleidLai, piksleidKorge);
+        mang.setScene(manguStseen);
+        mang.show();//ava aken
+        mang.setTitle("Memoriin");//mängu pealkiri
+        mang.setOnCloseRequest(event -> System.exit(0));//akna sulgedes läheb programm kinni
 
-    Laud(){
-    programmiAken.setTitle("Memoriin");
-        System.out.println("Olen Laua juurde jõudnud!");
-        seadistaStseen();
+        genereeriPildid();
         //genereeriPildid();
         //reageeriKlikile();
+        System.out.println("Olen Laua juurde jõudnud!");
 
-        programmiAken.show(); //Näita Mängu
     }
 
-    private void seadistaStseen() {
-        int piksleidLai = laualTulpasid * ruuduKylg;
-        int piksleidKorge = laualRidasid * ruuduKylg;
-        maailm = new StackPane();
-        Rectangle taust = new Rectangle(piksleidLai, piksleidKorge);
-        taust.setFill(Color.BLUE);
-        maailm.getChildren().add(taust);
-
-        laud = new GridPane();
-        maailm.getChildren().add(laud);
-
-        Scene scene = new Scene(maailm, piksleidKorge, piksleidLai);
-        programmiAken.setScene(scene);
-        programmiAken.setOnCloseRequest(event -> System.exit(0));
-        System.out.println("Olen Stseeni seadistamise juurde jõudnud!");
+    private void genereeriPildid() {
+        for (int i = 0; i < laualRidasid; i++) {
+            for (int j = 0; j < laualTulpasid; j++) {
+                Rectangle pilt = new Rectangle(pildiKylg, pildiKylg);//Ristküliku loomine, antud alguskoordinaadid ja laius/kõrgus
+                pilt.setId("Pilt");
+                pilt.setFill(Color.BLUE);
+                pilt.setStroke(Color.BLACK);//seda võib ka mitte teha
+                laud.setHgap(piltideVahe);//lisame vaba ruumi horisontaalselt
+                laud.setVgap(piltideVahe);//lisame vaba ruumi vertikaalselt
+                laud.add(pilt, i, j);
+                System.out.println("Olen piltide genereerimise juurde jõudnud!");
+            }
+        }
     }
-
-
 }

@@ -1,28 +1,17 @@
 package MemoryGame;
 
+import javafx.stage.Stage;
+
 /**
- * Created by janikaa on 4.12.2015.
- * Pildi ja Laua genereerimine
- * Kui pilt on veel laual,
- *  küsi kasutajalt sisendkoordinaadid
- *  vali kaarte
- *  anna tagasisidet
- * Mäng on läbi
+ * Created by janikaa on 10.12.2015.
  */
-
 public class Mang {
-    /*public Mang() {//Konstruktor käivitab objekti "Mang" (objekt on klassiga alati sama nimega, siis ta oskab käivitada seda)
-        System.out.println("START MÄNG"); //Prindime välja teksti "START MÄNG"
+    Stage mang;
 
-        // Loome objektid Laud ja Pilt:
-        Laud laud = new Laud();
-         //Mangija mangija = new Mangija();
+    public Mang () {
+        //seadista mäng
+        mang = new Stage();
+        new Laud();
 
-        //mängu töös hoidmine
-        //while (laud.kasPilteOnAlles()){
-         //   System.out.println("NEXT ROUND");
-
-    }*/
+    }
 }
-
-
