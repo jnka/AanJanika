@@ -21,10 +21,7 @@ public class Laud {
     int piltideVahe = 5; //piltidel on vahed
     int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVahe);//see on sellepärast selline, et mahuks aknasse ära, vaatame mingi parema lahenduse
     int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVahe);
-
-    Image laevaPilt = new Image("MemoryGame/pilt1.png");
-    ImagePattern laevaMuster = new ImagePattern(laevaPilt);
-
+    public boolean kasTekkisPaar;
 
     public Laud () {
         mang = new Stage();
@@ -38,49 +35,35 @@ public class Laud {
 
 
         genereeriPildid();
-        //reageeriKlikile();
 
         System.out.println("Olen Laua juurde jõudnud!");
     }
 
-    /*private void reageeriKlikile() {
-        laud.setOnMouseClicked(event -> {
-            Rectangle shape = (Rectangle) event.getTarget();
-            Integer rida = GridPane.getRowIndex(shape);
-            Integer tulp = GridPane.getColumnIndex(shape);
-            String id = shape.getId();
-
-            if (id == "pilt") {
-                shape.setId("paar");
-                shape.setFill(Color.WHITESMOKE);
-
-            } else if (id == "tühi") {
-                shape.setId("uuesti");
-                shape.setFill(Color.BLUE);
-            }
-            if (MangLabi()) {
-                gameover();
+    public boolean kasOnPilteAlles() {
+         for (Pilt pilt : pildistik) {//pildistik on kirjuatamata
+            boolean olenAllesPilt = pilt.kasOledAlles();
+            if (olenAllesPilt) {
+                return true;//tagastab meetodi tulemuse ehk et pilte on veel alles, kui seda käsku näeb, siis enam edasi ei lähe
             }
         }
-    }*/
+        return false;//if käib kõik pildid läbi ja kui ei jõudnud tulemuseni, et pilte on alles, siis tuleb siia
+    }
 
-    private void genereeriPildid() {
+    private void genereeriPildid() {//tsükkel piltide lauale asetamiseks
         for (int i = 0; i < laualRidasid; i++) {
             for (int j = 0; j < laualTulpasid; j++) {
-                Rectangle pilt = new Rectangle(pildiKylg, pildiKylg); //Ristküliku loomine, antud alguskoordinaadid ja laius/kõrgus
-                pilt.setId("Pilt");
-                pilt.setFill(Color.BLUE);
-                pilt.setStroke(Color.BLACK);
-                laud.setHgap(piltideVahe); //lisame vaba ruumi horisontaalselt
-                laud.setVgap(piltideVahe);//lisame vaba ruumi vertikaalselt
+                Pilt pilt = new Pilt(pildiKylg);//pildi loomine etteantud mõõtmetega
+                int rand = (int) (Math.random() * 2);//meie peame siia tegema rohkem kui kaks valikut, sest paare on üle kahe, võiks korrutada (*2*laualTulpasid), aga kuidas, siis if tsükkel, teha, et ta nii palju erinevaid pilte annaks?
+                if (rand == 1) {
+                    pilt.setId("pilt1");//pilt1 teab, et on pilt1, aga siia võib igale pildile mingi oma nime panna, et neid erinevalt midagi tegema panna
+                } else {
+                    pilt.setId("pilt2");
+                }
+                laud.setHgap(piltideVahe);//tekitab piltide asetuses vahed, et pildid ei oleks üksteise küljes
+                laud.setVgap(piltideVahe);
                 laud.add(pilt, i, j);
-
-
-
-                System.out.println("Olen piltide genereerimise juurde jõudnud!");
             }
         }
     }
-
 
 }
