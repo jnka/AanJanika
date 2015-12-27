@@ -19,7 +19,7 @@ public class Mang {
         Laud laud = new Laud();
         Mangija mangija = new Mangija();
 
-        //mängu sisu
+        /*mängu sisu
         while (laud.kasOnPilteAlles()) {
             boolean paar = laud.kasTekkisPaar;//kasTekkisPaar meetod on kirjutamata
             if (paar) {
@@ -28,6 +28,6 @@ public class Mang {
                 mangija.arvamata();
             }
         }
-        mangija.gameover();
+        mangija.gameover();*/
     }
 }

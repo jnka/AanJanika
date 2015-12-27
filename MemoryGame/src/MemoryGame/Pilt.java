@@ -20,7 +20,7 @@ public class Pilt extends Rectangle{
             if (pildiId.equals("pilt1")) {//peame siia kahe erineva pildi võrdluse tekitama ja kaks klikki tuleb teha enne hinnangut. If kui on paar.
                 setFill(Color.WHITESMOKE);
                 setId("paar");
-            } else if (pildiId.equals("pilt2")) {//if kui ei ole paar
+            } else if (pildiId.equals("pilt2")) {
                 setFill((Color.BLUE));//kui ei olnud paar, siis värvib siniseks tagasi
                 setId(("arvamata"));//panime praegu, et on arvamata, et game overit kontrollida, kui jätame id pilt2, siis ei jõuagi mängu lõppu pilteAlles meetodis
             } else if (pildiId.equals("paar")) {

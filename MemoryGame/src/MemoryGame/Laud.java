@@ -8,7 +8,9 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.util.Arrays;
+import java.util.Random;
 
 
 /**
@@ -56,11 +58,32 @@ public class Laud {
         for (int i = 0; i < laualRidasid; i++) {
             for (int j = 0; j < laualTulpasid; j++) {
                 Pilt pilt = new Pilt(pildiKylg);//pildi loomine etteantud mõõtmetega
-                int rand = (int) (Math.random() * 2 * laualTulpasid);//meie peame siia tegema rohkem kui kaks valikut, sest paare on üle kahe, võiks korrutada (*2*laualTulpasid), aga kuidas, siis if tsükkel, teha, et ta nii palju erinevaid pilte annaks?
-                if (rand == 1) {
-                    pilt.setId("pilt1");//pilt1 teab, et on pilt1, aga siia võib igale pildile mingi oma nime panna, et neid erinevalt midagi tegema panna
-                } else {
+                //int rand = (int) (Math.random() * 2 * laualTulpasid);//meie peame siia tegema rohkem kui kaks valikut, sest paare on üle kahe, võiks korrutada (*2*laualTulpasid), aga kuidas, siis if tsükkel, teha, et ta nii palju erinevaid pilte annaks?
+                Random rand = new Random();
+                int randomColor = rand.nextInt((8));
+                if (randomColor == 0) {//genereerime 8 erinevat värvi pilte
+                    pilt.setId("pilt1");
+                }else if (randomColor == 1){
                     pilt.setId("pilt2");
+                    pilt.setFill(Color.WHITESMOKE);
+                }else if (randomColor==2){
+                    pilt.setFill(Color.FLORALWHITE);
+                    pilt.setId("pilt3");
+                }else if (randomColor==3){
+                    pilt.setFill(Color.GREENYELLOW);
+                    pilt.setId("pilt4");
+                }else if (randomColor==4){
+                    pilt.setFill(Color.MEDIUMVIOLETRED);
+                    pilt.setId("pilt5");
+                }else if (randomColor==5){
+                    pilt.setFill(Color.DEEPSKYBLUE);
+                    pilt.setId("pilt6");
+                }else if (randomColor==6){
+                    pilt.setFill(Color.LIMEGREEN);
+                    pilt.setId("pilt7");
+                }else if (randomColor==7){
+                    pilt.setFill(Color.ORANGE);
+                    pilt.setId("pilt8");
                 }
                 //if (id =="Pilt1"){ //tuleb mõelda, kuidas erinevad ID-d omavahale sobitada ja võrrelda
                 //pilt.setId("pilt2");
