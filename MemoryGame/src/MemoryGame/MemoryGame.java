@@ -48,4 +48,6 @@ public class MemoryGame extends Application {
 *
 *    VIITED ALLIKALE:
 *    Objektorienteerituse loeng, Krister Viirsaar,
+*    JavaFX Game Tutorial: Memory Puzzle, kättesaadav: https://www.youtube.com/watch?v=QjuytZhQYo8
+*
 */

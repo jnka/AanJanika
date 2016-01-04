@@ -1,40 +1,80 @@
 package MemoryGame;
 
+import javafx.animation.FadeTransition;
+import javafx.geometry.Pos;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  * Created by janikaa on 13.12.2015.
  */
-public class Pilt extends Rectangle{
-    private boolean olenAllesPilt = true;
-    public Pilt(int i) {
-        super();
-        setWidth(i);
-        setHeight(i);
-        setFill(Color.BLUE);
-        setStroke(Color.BLACK);//seda võib ka mitte teha
+public class Pilt extends StackPane {
+    int pildiKylg = 150;
+    Text number = new Text();
+
+    public Pilt selected = null; //Alguses pole ükski pilt valitud, sellepärast alustame "null'ist"
+
+    public Pilt(String value) {
+        Rectangle kaart = new Rectangle();//teeb kaardi
+        kaart.setWidth(pildiKylg);//kaardi laius
+        kaart.setHeight(pildiKylg);//kaardi kõrgus
+        kaart.setFill(Color.BLUE);//sinist värvi kaart
+        kaart.setStroke(Color.BLACK);//kaardi piirjooned
+
+        number.setText(value);
+        number.setFont(Font.font(90));//numbri suurus pildil
+
+        setAlignment(Pos.CENTER);//number asetseb keskel
+        getChildren().addAll(kaart, number);
+
         setOnMouseClicked(event -> {
-            System.out.println("Klikkisin");
-            String pildiId = getId();//teeme id1 ja id2 ja siis if lauses kontrollime, kas võrduvad omavahel, selle asemel, et kontrollime kas on Pilt1 või Pilt2?
-            if (pildiId.equals("pilt1")) {//peame siia kahe erineva pildi võrdluse tekitama ja kaks klikki tuleb teha enne hinnangut. If kui on paar.
-                setFill(Color.WHITESMOKE);
-                setId("paar");
-            } else if (pildiId.equals("pilt2")) {
-                setFill((Color.BLUE));//kui ei olnud paar, siis värvib siniseks tagasi
-                setId(("arvamata"));//panime praegu, et on arvamata, et game overit kontrollida, kui jätame id pilt2, siis ei jõuagi mängu lõppu pilteAlles meetodis
-            } else if (pildiId.equals("paar")) {
-                System.out.println("Juba arvatud pilt!");
+            if (KasAvatud()) //Kui kaart on avatud ja selle peale uuesti vajutada, siis tagastab sama kaardi ehk ei juhtu midagi.
+                return;
+
+            if (selected==null){//Kui valitud pole ühtegi kaarti, ehk null
+                selected=this;
+                avaPilt(() ->{}); //Run meetodi jaoks
             }
-            if (!kasOledAlles()) {//kui pilte ei ole alles siis prindib mäng läbi
-                System.out.println("Mäng läbi!");
-                //gameOver();
-            }
+            else{//Kui selected pole null, siis peame uuesti kontrollima, kas mõni pilt on avatud
+                avaPilt(()->{
+                    if(!kasSamaValue(selected)){ //Kontrollime, kas avatud on samasugused kaardid
+                        selected.peidaPilt();
+                        this.peidaPilt();
+                    }
+
+                    selected = null;
+
+                });
+
+             }
         });
+
+        peidaPilt();
     }
 
-    public boolean kasOledAlles() {//EI TÖÖTA, sest ei saa lauda kätte, aga see meetod peaks pigem siin asuma
-        return olenAllesPilt;//tagastab meetodi tulemuse ehk et pilte on veel alles, kui seda käsku näeb, siis enam edasi ei lähe
+    public boolean KasAvatud(){
+        return number.getOpacity()==1; //Kui kaart = 1, siis on ta avatud seisuses.
+    }
+
+    public void avaPilt(Runnable action) {
+        FadeTransition peida = new FadeTransition(Duration.seconds(0.5), number);
+        peida.setToValue(1);
+        peida.setOnFinished(e-> action.run());
+        peida.play();
+    }
+
+    public void peidaPilt() {
+        FadeTransition peida = new FadeTransition(Duration.seconds(0.5), number);
+        peida.setToValue(0);
+        peida.play();
+    }
+
+    public boolean kasSamaValue(Pilt muu){
+        return number.getText().equals(muu.number.getText());
     }
 
 }
