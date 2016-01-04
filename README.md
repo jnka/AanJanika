@@ -1,12 +1,11 @@
 MEMORIIN (Memory Game)
 
-Janika Aan, Evelin Jõgi
+Janika Aan, Evelin JÃµgi
 
 PROJEKTI PLAAN
 
-Mängijaid on 1. 4x4 pildikaarti asetatakse lauale. Nende asukoht on juhuslikult genereeritud programmi poolt.
-Mängija valib laual olevatest kaartidest välja kaks kaarti. Kui pildid omavahel sobivad ehk mängijal õnnestub avada kaks ühesugust kaarti, muutuvad nad mängulaual mitteaktiivseks. Kui kaardid omavahel ei
-sobi, pööratakse nad laual ümber (pilt allapoole) ja mängija saab valida uuesti kaks kaarti. Mäng lõpeb, kui kõik paarid on laual leitud.
+MÃ¤ngijaid on 1. 4x4 pildikaarti asetatakse lauale. Nende asukoht on juhuslikult genereeritud programmi poolt.
+MÃ¤ngija valib laual olevatest kaartidest vÃ¤lja kaks kaarti. Kui pildid omavahel sobivad ehk mÃ¤ngijal Ãµnnestub avada kaks Ã¼hesugust kaarti, muutuvad nad mÃ¤ngulaual mitteaktiivseks. Need kaardid jÃ¤Ã¤vad mÃ¤nijale nÃ¤htavaks kuni mÃ¤ngu lÃµpunija neid ei saa enam valida uuesti. Kui kaardid omavahel ei sobi (ei oma samasuguseid numbreid), pÃ¶Ã¶ratakse nad laual Ã¼mber ja mÃ¤ngija saab valida uuesti kaks kaarti. MÃ¤ng lÃµpeb, kui kÃµik paarid on laual leitud.
 
 
 
