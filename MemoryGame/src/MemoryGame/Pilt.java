@@ -16,13 +16,13 @@ public class Pilt extends StackPane {
     int pildiKylg = 150;
     Text number = new Text();
 
-    public Pilt selected = null; //Alguses pole ükski pilt valitud, sellepärast alustame "null'ist"
+    public Pilt selected = null; //Alguses pole Ã¼kski pilt valitud, sellepÃ¤rast alustame "null'ist"
 
     public Pilt(String value) {
         Rectangle kaart = new Rectangle();//teeb kaardi
         kaart.setWidth(pildiKylg);//kaardi laius
-        kaart.setHeight(pildiKylg);//kaardi kõrgus
-        kaart.setFill(Color.BLUE);//sinist värvi kaart
+        kaart.setHeight(pildiKylg);//kaardi kÃµrgus
+        kaart.setFill(Color.BLUE);//sinist vÃ¤rvi kaart
         kaart.setStroke(Color.BLACK);//kaardi piirjooned
 
         number.setText(value);
@@ -32,14 +32,14 @@ public class Pilt extends StackPane {
         getChildren().addAll(kaart, number);
 
         setOnMouseClicked(event -> {
-            if (KasAvatud()) //Kui kaart on avatud ja selle peale uuesti vajutada, siis tagastab sama kaardi ehk ei juhtu midagi.
+            if (KasAvatud()) {//Kui kaart on avatud ja selle peale uuesti vajutada, siis tagastab sama kaardi ehk ei juhtu midagi.
                 return;
-
-            if (selected==null){//Kui valitud pole ühtegi kaarti, ehk null
+            }
+            if (selected==null){//Kui valitud pole Ã¼htegi kaarti, ehk null
                 selected=this;
                 avaPilt(() ->{}); //Run meetodi jaoks
             }
-            else{//Kui selected pole null, siis peame uuesti kontrollima, kas mõni pilt on avatud
+            else{//Kui selected pole null, siis peame uuesti kontrollima, kas mÃµni pilt on avatud
                 avaPilt(()->{
                     if(!kasSamaValue(selected)){ //Kontrollime, kas avatud on samasugused kaardid
                         selected.peidaPilt();
