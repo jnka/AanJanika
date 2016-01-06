@@ -7,47 +7,43 @@ import javafx.stage.Stage;
  * Created by janikaa on 10.12.2015.
  */
 public class MemoryGame extends Application {
-    //Stage mang;//klassimuutuja, klassis igalpool kättesaadav
+    //Stage mang;//klassimuutuja, klassis igalpool kÃ¤ttesaadav
 
-    @Override //märge, mis ütleb, et käesolev meetod on super klassist (Application) üle kirjutatud.
+    @Override //mÃ¤rge, mis Ã¼tleb, et kÃ¤esolev meetod on super klassist (Application) Ã¼le kirjutatud.
     public void start(Stage primaryStage) throws Exception {
-        new Mang();//käivitame mängu, siia saab hiljem uusi mängijaid luua, uusi Mange lisades
+        new Mang();//kÃ¤ivitame mÃ¤ngu, siia saab hiljem uusi mÃ¤ngijaid luua, uusi Mange lisades
     }
 }
 
 /*
-*Iga klass või objekt: 1) hoiab mingit infot (teab infot, muutuja); 2) teeb midagi (oskab midagi teha, meetod).
-* Meie mängus "Memoriin" (MemoryGame) on 5 klassi:
+*Iga klass vÃµi objekt: 1) hoiab mingit infot (teab infot, muutuja); 2) teeb midagi (oskab midagi teha, meetod).
+* Meie mÃ¤ngus "Memoriin" (MemoryGame) on 4 klassi ja Ã¼ks subklass:
 *
 * MemoryGame ehk Main
-*   Oskab mängu käivitada
+*   Oskab mÃ¤ngu kÃ¤ivitada
 * Mang (Stage)
-*    Oskab mängu seadistada
-*    Oskab mängu töös hoida
-*    Oskab mängu lõpetada
+*    Oskab mÃ¤ngu seadistada
+*    Oskab mÃ¤ngu tÃ¶Ã¶s hoida
+*    Oskab mÃ¤ngu lÃµpetada
 * Mangija (kasutajaga suhtlemine)
-*    Oskab küsida mängijalt, millist kaarti avada
-*    Oskab anda tagasisidet, kui pildipaar arvati ära
-*    Oskab anda tagasisidet, kui pildipaari ei arvatud ära
-*    Oskab anda tagasisidet, kui mäng on läbi
-* Laud (kõik tegevused, mis on piltide grupiga seotud)
+*   Oskab mÃ¤ngijaga suhelda
+* Laud (kÃµik tegevused, mis on piltide grupiga seotud)
 *    Teab piltide asukohta
 *    Oskab paigutada pildid lauale
 *    Oskab koordineerida pilte (oskab neid tagurpidi keerata, kui pildipaar on leitud)
 *    Oskab kontrollida, kas laual on veel pilte, mis ei ole avatud (ja leidnud paarilist)
-*    Oskab mängu seisu näidata (prindib laua välja)
-* Pilt (kaart ise, mis asub lauas)
+* Pilt (kaart ise, mis asub lauas), on Laua alamklass:
 *    Teab oma asukohta
-*    Teab, kas ta on arvatud (avastatud mängija poolt)
-*    Oskab laual kohta valida (tsükliga)
-*    Oskab saada äraarvatuks (leiab paarilise ja lahkub mängust)
-*    Oskab ennast ümberpöörata
-*    Oskab jääda avatuks, kui on ära arvatud
-*    Oskab öelda, kas on veel arvamata
+*    Teab, kas ta on arvatud (avastatud mÃ¤ngija poolt)
+*    Oskab laual kohta valida (tsÃ¼kliga)
+*    Oskab saada Ã¤raarvatuks (leiab paarilise ja lahkub mÃ¤ngust)
+*    Oskab ennast Ã¼mberpÃ¶Ã¶rata
+*    Oskab jÃ¤Ã¤da avatuks, kui on Ã¤ra arvatud
+*    Oskab Ã¶elda, kas on veel arvamata
 *
 *
 *    VIITED ALLIKALE:
-*    Objektorienteerituse loeng, Krister Viirsaar,
-*    JavaFX Game Tutorial: Memory Puzzle, kättesaadav: https://www.youtube.com/watch?v=QjuytZhQYo8
+*    Objektorienteerituse praktikumid Laevadepommitamise kohta JavaFX-is ja OOP, Krister Viirsaar,
+*    JavaFX Game Tutorial: Memory Puzzle, kÃ¤ttesaadav: https://www.youtube.com/watch?v=QjuytZhQYo8
 *
 */
