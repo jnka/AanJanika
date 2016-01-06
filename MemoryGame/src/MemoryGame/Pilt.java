@@ -32,9 +32,9 @@ public class Pilt extends StackPane {
         getChildren().addAll(kaart, number);
 
         setOnMouseClicked(event -> {
-            if (KasAvatud()) {//Kui kaart on avatud ja selle peale uuesti vajutada, siis tagastab sama kaardi ehk ei juhtu midagi.
+            if (KasAvatud()) //Kui kaart on avatud ja selle peale uuesti vajutada, siis tagastab sama kaardi ehk ei juhtu midagi.
                 return;
-            }
+            
             if (selected==null){//Kui valitud pole ühtegi kaarti, ehk null
                 selected=this;
                 avaPilt(() ->{}); //Run meetodi jaoks
