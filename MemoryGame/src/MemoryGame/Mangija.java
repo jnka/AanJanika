@@ -2,15 +2,11 @@ package MemoryGame;
 
 /**
  * Created by janikaa on 13.12.2015.
+ * MÃ¤ngijaga suhtlemine
  */
 public class Mangija {
-    public void paar() {
-        System.out.println("Leidsid paari!");
+    public void Tervitus() {
+        System.out.println("Tere Tulemast!");
     }
-    public void arvamata() {
-        System.out.println("See ei ole paar!");
-    }
-    public void gameover() {
-        System.out.println("Mäng läbi!");
-    }
+
 }
