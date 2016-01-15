@@ -1,16 +1,11 @@
 package MemoryGame;
 
-import javafx.animation.FadeTransition;
-import javafx.geometry.Pos;
+
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.*;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,123 +17,131 @@ import java.util.Collections;
  */
 public class Laud {
     Stage mang;//klassimuutuja, klassis igalpool kättesaadav
+    StackPane maailm;
     GridPane laud;//klassimuutuja, klassis igalpool kättesaadav
-    int pildiKylg = 150;
-    int laualTulpasid = 2;
-    int laualRidasid = laualTulpasid;
-    int paarideArv = (laualRidasid*laualTulpasid)/2;
-    int piltideVahe = 5;
-    int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVahe);//see on sellepärast selline, et mahuks aknasse ära, vaatame mingi parema lahenduse
-    int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVahe);
-    Pilt [] pildistik = new Pilt[laualRidasid*laualTulpasid];
-    private Pilt selected = null; //Alguses pole ükski pilt valitud, sellepärast alustame "null'ist"
-    public int klikiLugeja = 2; //vajalik selleks, et aktiveerib esimesed kaks klikki (ülejäänuid ignoreerib), sest me kontrollime vaid kahte asja antud mängus
-
+    private int pildiKylg = 150;
+    private int laualRidasid = 4;
+    private int laualTulpasid = laualRidasid;
+    private int paarideArv = (laualRidasid*laualTulpasid)/2;
+    private int piltideVaheLauas = 5;
+    private int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVaheLauas);
+    private int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVaheLauas);
+    ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
 
 
     public Laud () {
+        maailm = new StackPane();
         mang = new Stage();
         laud = new GridPane();
-        Scene manguStseen = new Scene(laud, piksleidLai, piksleidKorge);
+        maailm.getChildren().add(laud);
+        Scene manguStseen = new Scene(maailm, piksleidLai, piksleidKorge);
         mang.setScene(manguStseen);
         mang.show();//ava aken
         mang.setOnCloseRequest(event -> System.exit(0));//akna sulgedes läheb programm kinni
         mang.setTitle("Memoriin");
 
         genereeriPildid();
+        reageeriKlikile();
     }
 
-    //tsükkel piltide lauale asetamiseks
-    private void genereeriPildid() {
-        int nr = 1; //alustab numbrist 1
-        ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
-        for (int i = 0; i < paarideArv; i++) {
-            pildid.add(new Pilt(String.valueOf(nr)));//Pildi loomine, prindib numbri tektiväärtusteks
-            pildid.add(new Pilt(String.valueOf(nr)));//Tuleb teha kaks korda, kuna meil kaartide arv lauas = 2 x paarideArv
-            nr++;//suurendab numbreid ühe võrra
-        }
+    //klikile reageerimise meetod
+    private void reageeriKlikile() {
+        laud.setOnMouseClicked(event -> {
 
-        //segame pildid lauas
-        Collections.shuffle(pildid);
-        System.out.println(pildid);//prindime pildid välja
+            //event.getTarget teab millisele rectagelile ehk kaardile klikiti
+            Rectangle kaart = (Rectangle) event.getTarget();
 
-        for (int i=0; i < pildid.size(); i++) {
-            Pilt pilt = pildid.get(i);
-            pilt.setTranslateX((pildiKylg+piltideVahe) * (i % laualRidasid));
-            pilt.setTranslateY((pildiKylg+piltideVahe) * (i / laualTulpasid));
-            laud.getChildren().add(pilt);
-        }
+            //võtame kasutusse rectangeli vanema ehk pildi
+            Pilt pilt = (Pilt) kaart.getParent();
+            System.out.println(pilt);
 
-    }
+            //määrame piltidele uued nimed, et neid võrrelda
+            Pilt pilt1 = pilt;
+            Pilt pilt2 = pilt;
 
-    public class Pilt extends StackPane {
-        int pildiKylg = 150;
-        Text number = new Text();
-
-        public Pilt(String value) {
-            Rectangle kaart = new Rectangle();//teeb kaardi
-            kaart.setWidth(pildiKylg);//kaardi laius
-            kaart.setHeight(pildiKylg);//kaardi kõrgus
-            kaart.setFill(Color.BLUE);//sinist värvi kaart
-            kaart.setStroke(Color.BLACK);//kaardi piirjooned
-
-            number.setText(value);
-            number.setFont(Font.font(90));//numbri suurus pildil
-
-            setAlignment(Pos.CENTER);//number asetseb keskel
-            getChildren().addAll(kaart, number);
-
-            setOnMouseClicked(this::Klikk);
-            peidaPilt();
-        }
-
-        public void Klikk(MouseEvent mouseEvent){
-            if (KasAvatud() || klikiLugeja==0)
+            //kui pilt on juba avatud, siis ära tee midagi (ütleb konsoolis, et on juba avatud)
+            if (pilt.piltOnAvatud())
                 return;
 
-                klikiLugeja--;
-
-            if (selected==null){//Kui valitud pole ühtegi kaarti, ehk null
-                selected=this;
-                avaPilt(() ->{}); //Run meetodi jaoks
-            }
-            else{//teise kliki jaoks vajalik kontroll
-                avaPilt(()->{
-                    if(!kasSamaValue(selected)){ //Kontrollime, kas avatud on samasugused kaardid
-                        selected.peidaPilt();
-                        this.peidaPilt();
-                    }
-
-                    selected = null;
-                    klikiLugeja=2;
-
+            //kui ühtegi pili ei ole avatud siis avab esimese, kui üks on juba avatud siis avab teise
+            //EI LEIA PAARE, sest ei oska panna võrdlema kahe pildi ID-sid, mis on pildil oleva numbriga sama väärtusega
+            if (!kasVahemaltUksPiltOnAvatud()) {
+                System.out.println("ühtegi pilti ei ole veel avatud");
+                pilt1.avaEsimenePilt(() -> {
+                    System.out.println(pilt1);
+                    System.out.println(pilt1.getId());
                 });
-
+            } else if (kasVahemaltUksPiltOnAvatud()) {
+                System.out.println("vähemalt üks pilt on juba avatud");
+                pilt2.avaTeinePilt(() -> {
+                    System.out.println(pilt2);
+                    System.out.println(pilt2.getId());
+                    suleKoikPildid();
+                });
             }
-        }
 
-        public boolean KasAvatud(){
-            return number.getOpacity()==1; //Kui kaart = 1, siis on ta avatud seisuses.
-        }
 
-        public void avaPilt(Runnable action) {
-            FadeTransition peida = new FadeTransition(Duration.seconds(0.5), number);
-            peida.setToValue(1);
-            peida.setOnFinished(e-> action.run());
-            peida.play();
-        }
 
-        public void peidaPilt() {
-            FadeTransition peida = new FadeTransition(Duration.seconds(0.5), number);
-            peida.setToValue(0);
-            peida.play();
-        }
+            //paari testimine, aga Ei tööta! leiab paari kummagi pildi kohta iseendaga.
+            if (pilt1.number.getText().equals(pilt2.number.getText())) {
+                System.out.println("Paar!");
+            }
 
-        public boolean kasSamaValue(Pilt muu){
-            return number.getText().equals(muu.number.getText());
-        }
-
+        });
+        //sule mängu alguses kõik pildid
+        suleKoikPildid();
     }
 
 
+    //küsib pildi klassist iga pildi käest kas ta on avatud
+    public boolean kasVahemaltUksPiltOnAvatud() {
+        for (Pilt pilt : pildid) {
+            boolean vahemaltUksPiltOnAvatud = pilt.piltOnAvatud();
+            if (vahemaltUksPiltOnAvatud) {
+                return true;//tagastab meetodi tulemuse ehk et vähemalt üks pilt on avatud, kui seda käsku näeb, siis enam edasi ei lähe
+            }
+        }
+        return false;//if käib kõik pildid läbi ja kui ei jõudnud tulemuseni, et mingi pilt oleks avatud, siis tuleb siia
+    }
+
+    /*//kutsub pildi klassist meetodi avaPilt
+    public void avaPilt () {
+        for (Pilt pilt : pildid) {
+            pilt.avaEsimenePilt(() -> {
+            });
+        }
+    }*/
+
+    //kutsub pildi klaasist meetodi peidaPilt
+    public void suleKoikPildid() {
+        for (Pilt pilt : pildid) {
+            pilt.peidaPilt();
+        }
+    }
+
+    //meetod, mis loob pildid, segab ja asetab lauale
+    public void genereeriPildid() {
+
+        //loome piltide paarid ArrayListi
+        int nr = 1;
+
+        //kui see lause tõsta laua klassi külge, siis boolean kasVahemaltUksPiltOnAvatud ei näita viga, aga ei tea kas ikka töötab
+        for (int i = 0; i < paarideArv; i++) {
+            pildid.add(new Pilt(String.valueOf(nr)));//Pildi loomine, prindib numbri tektiväärtusteks, sama mis Pilt pilt = new Pilt(String.valueOf(nr));
+            pildid.add(new Pilt(String.valueOf(nr)));
+            nr++;//suurendab pildile tulevaid numbreid ühe võrra
+        }
+
+        //segame pildid
+        Collections.shuffle(pildid);
+        System.out.println(pildid);
+
+        //paneme pildid lauda
+        for (int i=0; i < pildid.size(); i++) {
+            Pilt pilt = pildid.get(i);
+            pilt.setTranslateX((pildiKylg+piltideVaheLauas) * (i % laualRidasid));
+            pilt.setTranslateY((pildiKylg+piltideVaheLauas) * (i / laualTulpasid));
+            laud.getChildren().add(pilt);
+        }
+    }
 }
