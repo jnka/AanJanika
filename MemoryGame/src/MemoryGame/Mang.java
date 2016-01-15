@@ -4,19 +4,26 @@ import javafx.stage.Stage;
 
 /**
  * Created by janikaa on 10.12.2015.
- * Mängu käivitamine
  */
 public class Mang {
-    Stage mang;
+    Stage mang;//klassimuutuja, klassis igalpool kättesaadav
 
-  public Mang () {
+    public Mang () {
         mang = new Stage();
 
-        //loome objektid
+        //loome laua ja mängija objektid
         Laud laud = new Laud();
         Mangija mangija = new Mangija();
 
-        mangija.Tervitus();//ilmub konsoolis
-  }
-
+        //Mängu sisu.
+        /*while (laud.kasOnPilteAlles()) {
+            boolean paar = pilt.kasTekkisPaar;
+            if (paar) {
+                mangija.paar();
+            } else {
+                mangija.arvamata();
+            }
+        }
+        mangija.gameover();*/
+    }
 }
