@@ -1,11 +1,15 @@
 package MemoryGame;
 
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,7 +21,7 @@ import java.util.Collections;
  */
 public class Laud {
     Stage mang;//klassimuutuja, klassis igalpool kättesaadav
-    StackPane maailm;
+    BorderPane maailm;
     GridPane laud;//klassimuutuja, klassis igalpool kättesaadav
     private int pildiKylg = 150;
     private int laualRidasid = 4;
@@ -27,18 +31,61 @@ public class Laud {
     private int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVaheLauas);
     private int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVaheLauas);
     ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
+    public Pilt esimenePilt;
+    public Pilt arvatudPilt;
 
 
     public Laud () {
-        maailm = new StackPane();
         mang = new Stage();
+        mang.setTitle("Memoriin");
+        maailm = new BorderPane();
         laud = new GridPane();
         maailm.getChildren().add(laud);
         Scene manguStseen = new Scene(maailm, piksleidLai, piksleidKorge);
+
+        //MENÜÜRIBA
+        MenuBar menuuRiba = new MenuBar();
+        maailm.setTop(menuuRiba);
+
+        //Menüü nupp "Tegevus"
+        Menu tegevused = new Menu("Tegevus");
+
+        //Menüü "tegevus" alategevused
+        MenuItem uusMang = new MenuItem("Uus mäng");
+        MenuItem sulgeMang = new MenuItem("Sulge mäng");
+
+        //Lisa alategevused menuu nupu "Tegevus" alla
+        tegevused.getItems().addAll(uusMang, sulgeMang);
+
+        //Menüü nupp "Spikker"
+        Menu spikker = new Menu("Spikker");
+
+        //Menüü "Spikker" alategevused
+        MenuItem kuidasMangida = new MenuItem("Kuidas mängida?");
+        spikker.getItems().addAll(kuidasMangida);
+
+        //Lisa menüü nupud menüüribale
+        menuuRiba.getMenus().addAll(tegevused, spikker);
+
+        //VALIKUTERIBA
+        ToolBar valikuteriba = new ToolBar();
+        maailm.setBottom(valikuteriba);
+
+        //Valikuteriba nupp "Alusta mängu"
+        Button alustaMangu = new Button("Alusta mängu");
+        valikuteriba.getItems().addAll(alustaMangu);
+
+        //Taimer
+        Timeline kell = new Timeline(new KeyFrame(
+                Duration.millis(2500),
+                ae -> reageeriKlikile()));
+            System.out.println("Timer töötab!");
+            kell.play();
+
         mang.setScene(manguStseen);
         mang.show();//ava aken
         mang.setOnCloseRequest(event -> System.exit(0));//akna sulgedes läheb programm kinni
-        mang.setTitle("Memoriin");
+
 
         genereeriPildid();
         reageeriKlikile();
@@ -55,36 +102,37 @@ public class Laud {
             Pilt pilt = (Pilt) kaart.getParent();
             System.out.println(pilt);
 
-            //määrame piltidele uued nimed, et neid võrrelda
-            Pilt pilt1 = pilt;
-            Pilt pilt2 = pilt;
-
             //kui pilt on juba avatud, siis ära tee midagi (ütleb konsoolis, et on juba avatud)
             if (pilt.piltOnAvatud())
                 return;
 
             //kui ühtegi pili ei ole avatud siis avab esimese, kui üks on juba avatud siis avab teise
-            //EI LEIA PAARE, sest ei oska panna võrdlema kahe pildi ID-sid, mis on pildil oleva numbriga sama väärtusega
+            //EI JÄTA PAARE AVATUKS
             if (!kasVahemaltUksPiltOnAvatud()) {
                 System.out.println("ühtegi pilti ei ole veel avatud");
-                pilt1.avaEsimenePilt(() -> {
-                    System.out.println(pilt1);
-                    System.out.println(pilt1.getId());
+                pilt.avaEsimenePilt(() -> {
+                    esimenePilt = pilt;
+                    System.out.println(esimenePilt);
+                    System.out.println(esimenePilt.getId());
                 });
             } else if (kasVahemaltUksPiltOnAvatud()) {
                 System.out.println("vähemalt üks pilt on juba avatud");
-                pilt2.avaTeinePilt(() -> {
-                    System.out.println(pilt2);
-                    System.out.println(pilt2.getId());
-                    suleKoikPildid();
+                pilt.avaTeinePilt(() -> {
+                    System.out.println(pilt);
+                    System.out.println(pilt.getId());
+                    if (!esimenePilt.number.getText().equals(pilt.number.getText())) {
+                        System.out.println("Ei ole paar!");
+                        esimenePilt.peidaPilt();
+                        pilt.peidaPilt();
+
+                    } else {
+                        System.out.println("Paar!");
+                        esimenePilt.setId("Arvatud");
+                        System.out.println(esimenePilt);
+                        pilt.setId("Arvatud");
+                        System.out.println(pilt);
+                    }
                 });
-            }
-
-
-
-            //paari testimine, aga Ei tööta! leiab paari kummagi pildi kohta iseendaga.
-            if (pilt1.number.getText().equals(pilt2.number.getText())) {
-                System.out.println("Paar!");
             }
 
         });
