@@ -1,19 +1,15 @@
 package MemoryGame;
 
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,8 +33,6 @@ public class Laud {
     ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
     public Pilt esimenePilt;
     public Pilt arvatudPilt;
-    private Timeline aeg;
-
 
 
     public Laud () {
@@ -48,7 +42,6 @@ public class Laud {
         laud = new GridPane();
         maailm.getChildren().add(laud);
         Scene manguStseen = new Scene(maailm, piksleidLai, piksleidKorge);
-
 
         //MENÜÜRIBA
         MenuBar menuuRiba = new MenuBar();
@@ -80,37 +73,32 @@ public class Laud {
 
         //Valikuteriba nupp "Alusta mängu", Pausi nupp "Paus", timer läheb tööle, kui vajutatakse "Alusta mängu" nuppu
         Button alustaMangu = new Button("Alusta mängu");
-        Button paus = new Button("Paus");
-
-         valikuteriba.getItems().addAll(alustaMangu, paus);
-
-        Label näitaAega = new Label();//timeri jaoks 
-        näitaAega.setTranslateY(270);
-        näitaAega.setTranslateX(170);
-        final Timeline aeg = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                näitaAega.setText(time.getTime());//kuvame taimeri teksti kujul
-            }
-        }));
-        aeg.setCycleCount(Animation.INDEFINITE);
-        aeg.play();
-
-/*
-        alustaMangu.setOnAction(e -> {aeg.play();
-        });
-
-        //Paus
-        paus.setOnAction(e -> {aeg.pause();
-        });
+        Button stop = new Button("Stop");
 
         //Taimer
-        Timeline kell = new Timeline(new KeyFrame(
-                Duration.millis(2500),
-                ae -> reageeriKlikile()));
-            System.out.println("Timer töötab!");
-            kell.play();
-*/
+        KTimer ktimer;
+        Label timeLabel;
+        ktimer = new KTimer();
+        timeLabel = new Label(ktimer.getSspTime().get());
+        ktimer.getSspTime().addListener(new InvalidationListener() {
+
+            @Override
+            public void invalidated(Observable observable) {
+                timeLabel.setText(ktimer.getSspTime().get());
+            }
+        });
+
+        valikuteriba.getItems().addAll(alustaMangu, stop, timeLabel);
+
+        //Taimer hakkab tööle, kui vajutada nuppu "Alusta mängu", siit saab ka pausi peale panna.
+        alustaMangu.setOnAction(e -> {
+            ktimer.startTimer(ktimer.getTime());
+        });
+
+        //Peata taimer
+        stop.setOnAction(e -> {
+            ktimer.stopTimer();
+        });
 
         mang.setScene(manguStseen);
         mang.show();//ava aken
