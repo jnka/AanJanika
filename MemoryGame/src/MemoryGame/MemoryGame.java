@@ -1,7 +1,11 @@
 package MemoryGame;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
+
+import javax.management.timer.Timer;
+import java.time.Duration;
 
 /**
  * Created by janikaa on 10.12.2015.
@@ -12,6 +16,7 @@ public class MemoryGame extends Application {
     @Override //märge, mis ütleb, et käesolev meetod on super klassist (Application) üle kirjutatud.
     public void start(Stage primaryStage) throws Exception {
         new Mang();//käivitame mängu, siia saab hiljem uusi mängijaid luua, uusi Mange lisades
+
     }
 }
 
@@ -45,5 +50,9 @@ public class MemoryGame extends Application {
 *    VIITED ALLIKALE:
 *    Objektorienteerituse praktikumid Laevadepommitamise kohta JavaFX-is ja OOP, Krister Viirsaar,
 *    JavaFX Game Tutorial: Memory Puzzle, kättesaadav: https://www.youtube.com/watch?v=QjuytZhQYo8
+*    Värvide hajuvus: https://docs.oracle.com/javafx/2/animations/basics.htm
+*    Taimer: http://stackoverflow.com/questions/9355303/javafx-stopwatch-timer
+*    GUI: http://www.javak.co.za/tutorials/guiprimer/
+*
 *
 */
