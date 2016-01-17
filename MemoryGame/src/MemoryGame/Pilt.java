@@ -1,11 +1,8 @@
-
 package MemoryGame;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -41,6 +38,7 @@ public class Pilt extends StackPane {
         varvHajub.setCycleCount(Timeline.INDEFINITE);
         varvHajub.setAutoReverse(true);
         varvHajub.play();
+
     }
 
     //meetod, mis kontrollib kas pilt on avatud või mitte, kui on 1, siis on avatud
