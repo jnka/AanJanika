@@ -2,14 +2,25 @@ package MemoryGame;
 
 
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Application;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +34,8 @@ public class Laud {
     Stage mang;//klassimuutuja, klassis igalpool kättesaadav
     BorderPane maailm;
     GridPane laud;//klassimuutuja, klassis igalpool kättesaadav
+    //KTimer ktimer;
+    Label timeLabel;
     private int pildiKylg = 150;
     private int laualRidasid = 4;
     private int laualTulpasid = laualRidasid;
@@ -32,7 +45,10 @@ public class Laud {
     private int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVaheLauas);
     ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
     public Pilt esimenePilt;
-    public Pilt arvatudPilt;
+    private static final Integer STARTTIME = 15;
+    private Timeline timeline;
+    private Label timerLabel = new Label();
+    private Integer timeSeconds = STARTTIME;
 
 
     public Laud () {
@@ -42,6 +58,7 @@ public class Laud {
         laud = new GridPane();
         maailm.getChildren().add(laud);
         Scene manguStseen = new Scene(maailm, piksleidLai, piksleidKorge);
+
 
         //MENÜÜRIBA
         MenuBar menuuRiba = new MenuBar();
@@ -75,9 +92,54 @@ public class Laud {
         Button alustaMangu = new Button("Alusta mängu");
         Button stop = new Button("Stop");
 
-        //Taimer
-        KTimer ktimer;
-        Label timeLabel;
+        timerLabel.setText(timeSeconds.toString());
+        timerLabel.setTextFill(Color.RED);
+        timerLabel.setStyle("-fx-font-size: 4em;");
+
+        valikuteriba.getItems().addAll(alustaMangu, stop, timerLabel);
+
+
+        mang.setScene(manguStseen);
+        mang.show();//ava aken
+        mang.setOnCloseRequest(event -> System.exit(0));//akna sulgedes läheb programm kinni
+
+
+        genereeriPildid();
+        reageeriKlikile();
+
+//Eventhandler EI TÖÖTA!
+        alustaMangu.setOnAction(new EventHandler() {  //Button event handler
+
+                    public void handle(ActionEvent event) {
+                        if (timeline!= null) {
+                            timeline.stop();
+                        }
+                        timeSeconds = STARTTIME;
+
+                        // update timerLabel
+                        timerLabel.setText(timeSeconds.toString());
+                        timeline = new Timeline();
+                        timeline.setCycleCount(Timeline.INDEFINITE);
+                        timeline.getKeyFrames().add(
+                                new KeyFrame(Duration.seconds(1),
+                                        new EventHandler() {
+                                            // KeyFrame event handler
+                                            public void handle(ActionEvent event) {
+                                                timeSeconds--;
+                                                // update timerLabel
+                                                timerLabel.setText(
+                                                        timeSeconds.toString());
+                                                if (timeSeconds <= 0) {
+                                                    timeline.stop();
+                                                }
+                                            }
+                                        }));
+                        timeline.playFromStart();
+                    }
+                });
+
+        }
+  /*      //Taimer
         ktimer = new KTimer();
         timeLabel = new Label(ktimer.getSspTime().get());
         ktimer.getSspTime().addListener(new InvalidationListener() {
@@ -88,10 +150,8 @@ public class Laud {
             }
         });
 
-        valikuteriba.getItems().addAll(alustaMangu, stop, timeLabel);
 
-        //Taimer hakkab tööle, kui vajutada nuppu "Alusta mängu", siit saab ka pausi peale panna.
-        alustaMangu.setOnAction(e -> {
+        //Taimer hakkab tööle, kui vajutada nuppu "Alusta mängu", siit samast nupust saab ka pausi peale panna.alustaMangu.setOnAction(e -> {
             ktimer.startTimer(ktimer.getTime());
         });
 
@@ -99,15 +159,11 @@ public class Laud {
         stop.setOnAction(e -> {
             ktimer.stopTimer();
         });
-
-        mang.setScene(manguStseen);
-        mang.show();//ava aken
-        mang.setOnCloseRequest(event -> System.exit(0));//akna sulgedes läheb programm kinni
+*/
 
 
-        genereeriPildid();
-        reageeriKlikile();
-    }
+
+
 
     //klikile reageerimise meetod
     private void reageeriKlikile() {
@@ -157,6 +213,8 @@ public class Laud {
         //sule mängu alguses kõik pildid
         suleKoikPildid();
     }
+
+
 
 
     //küsib pildi klassist iga pildi käest kas ta on avatud
@@ -211,3 +269,4 @@ public class Laud {
         }
     }
 }
+
