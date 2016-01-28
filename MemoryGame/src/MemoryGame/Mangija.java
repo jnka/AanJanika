@@ -4,6 +4,7 @@ package MemoryGame;
  * Created by janikaa on 12.12.2015.
  */
 public class Mangija {
+
     public void paar() {
         System.out.println("Leidsid paari!");
     }
