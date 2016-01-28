@@ -231,24 +231,6 @@ public class Laud {
         return false;
     }
 
-    /*//kontrollib kas tekkis paar
-    public void kasTekkisPaar () {
-        if (esimenePilt.number.getText().equals(pilt.number.getText())) {
-            System.out.println("Paar!");
-            esimenePilt.setId("Arvatud");
-            pilt.setId("Arvatud");
-            System.out.println(esimenePilt.getId());
-            System.out.println(pilt.getId());
-            esimenePilt.vilgutaPildiPiirjooni();
-            pilt.vilgutaPildiPiirjooni();
-        } else {
-            System.out.println("Ei ole paar!");
-            esimenePilt.peidaPilt();
-            pilt.peidaPilt();
-        }
-        esimenePilt = null;
-    }*/
-
     //küsib pildi klassist iga pildi käest kas ta on avatud
     public boolean kasVahemaltUksPiltOnAvatud() {
         for (Pilt pilt : pildid) {
