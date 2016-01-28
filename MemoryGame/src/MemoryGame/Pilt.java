@@ -14,36 +14,38 @@ import javafx.util.Duration;
  * Created by janikaa on 8.01.2016.
  */
 public class Pilt extends StackPane {
+    public Rectangle kaart = new Rectangle();//teeb kaardi
     private int pildiKylg = 150;
     public Text number = new Text();
 
     public Pilt(String value) {
-        Rectangle kaart = new Rectangle();//teeb kaardi
         kaart.setWidth(pildiKylg);//kaardi laius
         kaart.setHeight(pildiKylg);//kaardi kõrgus
+        kaart.setArcWidth(10);//kaardi ümarad nurgad
+        kaart.setArcHeight(10);//kaardi ümarad nurgad
         kaart.setFill(Color.BLUE);//sinist värvi kaart
-        kaart.setStroke(Color.BLACK);//kaardi piirjooned
+        kaart.setStroke(Color.DARKBLUE);//kaardi piirjooned
+        kaart.setStrokeWidth(3);//kaardi piirjoone paksus
 
         number.setText(value);
         number.setFont(Font.font(90));//numbri suurus pildil
         number.setMouseTransparent(true);//ütleme, et numbrile ehk textile ei saa klikkida
 
         setAlignment(Pos.CENTER);//number asetseb pildi keskel
-        getChildren().addAll(kaart, number); //paneb lapsed ehk kaardi ja numbri vanemale ehk stackpane'ile, kaart on numbri taga, sest on sulgudes eespool
-
-        //Lisame kaartidele hajuva liikuva värvi
-        FadeTransition varvHajub = new FadeTransition(Duration.millis(30000), kaart);
-        varvHajub.setFromValue(1.0);
-        varvHajub.setToValue(0.1);
-        varvHajub.setCycleCount(Timeline.INDEFINITE);
-        varvHajub.setAutoReverse(true);
-        varvHajub.play();
-
+        getChildren().addAll(kaart, number);//paneb lapsed ehk kaardi ja numbri vanemale ehk stackpane'ile, kaart on numbri taga, sest on sulgudes eespool
     }
 
     //meetod, mis kontrollib kas pilt on avatud või mitte, kui on 1, siis on avatud
     public boolean piltOnAvatud() {
         return number.getOpacity() == 1;
+    }
+
+    //meetod, mis paneb pildi piirjooned vilkuma
+    public void vilgutaPildiPiirjooni () {
+        StrokeTransition vilgu = new StrokeTransition(Duration.seconds(0.5), kaart, Color.DARKBLUE, Color.YELLOW);
+        vilgu.setCycleCount(4);
+        vilgu.setAutoReverse(true);
+        vilgu.play();
     }
 
     //meetod, mis avab esimese pildi
@@ -63,8 +65,6 @@ public class Pilt extends StackPane {
         ft.setOnFinished(event -> action.run());
         ft.play();
     }
-
-
 
     //meetod, mis peidab pildi
     public void peidaPilt() {
