@@ -34,21 +34,20 @@ public class Laud {
     Stage mang;//klassimuutuja, klassis igalpool kättesaadav
     BorderPane maailm;
     GridPane laud;//klassimuutuja, klassis igalpool kättesaadav
-    //KTimer ktimer;
-    Label timeLabel;
     private int pildiKylg = 150;
     private int laualRidasid = 4;
     private int laualTulpasid = laualRidasid;
     private int paarideArv = (laualRidasid*laualTulpasid)/2;
+    private int leitudPaarideLugeja = 0;
     private int piltideVaheLauas = 5;
+    private int nuppudeVahe = 10;
     private int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVaheLauas);
-    private int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVaheLauas);
+    private int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVaheLauas)+40;
+
     ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
-    public Pilt esimenePilt;
-    private static final Integer STARTTIME = 15;
-    private Timeline timeline;
-    private Label timerLabel = new Label();
-    private Integer timeSeconds = STARTTIME;
+    public Pilt pilt;
+    public Pilt esimenePilt = null;
+
 
 
     public Laud () {
@@ -59,26 +58,67 @@ public class Laud {
         maailm.getChildren().add(laud);
         Scene manguStseen = new Scene(maailm, piksleidLai, piksleidKorge);
 
-
         //MENÜÜRIBA
         MenuBar menuuRiba = new MenuBar();
         maailm.setTop(menuuRiba);
 
-        //Menüü nupp "Tegevus"
-        Menu tegevused = new Menu("Tegevus");
+        //1. Menüü nupp "Tegevus"
+        Menu tegevused = new Menu("_Tegevus");
+        tegevused.setMnemonicParsing(true);//avab menüü nupu alt+t
 
-        //Menüü "tegevus" alategevused
-        MenuItem uusMang = new MenuItem("Uus mäng");
+        //Menüü "tegevus" alategevused:
+        //1.1. alategevus "Uus mäng"
+        MenuItem uusMang = new MenuItem("Uus mäng...");
+        uusMang.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.SHORTCUT_DOWN));//kiirklahvid Ctrl+M, et alustada uut mängu
+        //alategevus "Uus mäng" meetod
+        uusMang.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                new Mang();
+            }
+        });
+        //1.2. alategevus "Näita lahendust"
+        MenuItem naitaLahendust = new MenuItem("Näita lahendust");
+        naitaLahendust.setAccelerator(new KeyCodeCombination(KeyCode.L, KeyCombination.SHORTCUT_DOWN));//kiirklahvid Ctrl+L, et avada kõik kaardid
+        //alategevuse "Näita lahendust" meetod
+        naitaLahendust.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                avaKoikPildid();
+            }
+        });
+        //1.3. alategevus "Sulge mäng"
         MenuItem sulgeMang = new MenuItem("Sulge mäng");
+        sulgeMang.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));//kiirklahvid Ctrl+x, et väljuda mängust
+        //alategevuse "Sulge mäng" meetod
+        sulgeMang.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                TeadeTahabValikut.teadeTahabValikut("Sulge mäng", "Kas oled kindel, et soovid mängu sulgeda?");
+            }
+        });
 
         //Lisa alategevused menuu nupu "Tegevus" alla
-        tegevused.getItems().addAll(uusMang, sulgeMang);
+        tegevused.getItems().addAll(uusMang, naitaLahendust, sulgeMang);
 
-        //Menüü nupp "Spikker"
-        Menu spikker = new Menu("Spikker");
+        //2. Menüü nupp "Spikker"
+        Menu spikker = new Menu("_Spikker");
+        spikker.setMnemonicParsing(true);//avab menüü nupu alt+s
 
-        //Menüü "Spikker" alategevused
+        //2.1. Menüü "Spikker" alategevused
         MenuItem kuidasMangida = new MenuItem("Kuidas mängida?");
+        kuidasMangida.setAccelerator(new KeyCodeCombination(KeyCode.F1));
+        kuidasMangida.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Teade.teade("Mängu õpetus", " \n" +
+                                "Vali hiirega kaardile klikkides kaks kaarti. Kui Sul õnnestub avada kaks ühesugust kaarti\n" +
+                        "ehk tekib kaardipaar, siis jäävad kaardid mängu lõpuni avatuks.\n" +
+                        "Kui kaardid omavahel ei sobi ehk paari ei teki, siis pööratakse need laual uuesti ümber\n" +
+                        "ja tuleb valida kaks uut kaarti.\n" +
+                        "Mäng lõppeb, kui kõik kaardipaarid on laualt üles leitud.");
+            }
+        });
         spikker.getItems().addAll(kuidasMangida);
 
         //Lisa menüü nupud menüüribale
@@ -88,16 +128,29 @@ public class Laud {
         ToolBar valikuteriba = new ToolBar();
         maailm.setBottom(valikuteriba);
 
-        //Valikuteriba nupp "Alusta mängu", Pausi nupp "Paus", timer läheb tööle, kui vajutatakse "Alusta mängu" nuppu
-        Button alustaMangu = new Button("Alusta mängu");
-        Button stop = new Button("Stop");
+        //Valikuteriba nupp "Alusta mängu"
+        Button alustaManguNupp = new Button("Alusta mängu");
+        alustaManguNupp.setOnMouseEntered(event1 -> alustaManguNupp.setEffect(new DropShadow()));
+        alustaManguNupp.setOnMouseExited(event1 -> alustaManguNupp.setEffect(null));
 
-        timerLabel.setText(timeSeconds.toString());
-        timerLabel.setTextFill(Color.RED);
-        timerLabel.setStyle("-fx-font-size: 4em;");
+        //Valikuteriba nupp "Paus"
+        Button pausNupp = new Button("Paus");
+        pausNupp.setOnMouseEntered(event1 -> pausNupp.setEffect(new DropShadow()));
+        pausNupp.setOnMouseExited(event1 -> pausNupp.setEffect(null));
 
-        valikuteriba.getItems().addAll(alustaMangu, stop, timerLabel);
+        HBox keskmisedNupud = new HBox(alustaManguNupp, pausNupp);//Teeme HBoxi ja paneme nupud sisse, et saaks need valikuterea keskele asetada
+        HBox parempoolsedNupud = new HBox();//Teeme HBoxi ja paneme taimeri sisse, et saaks selle valikutereal paremale asetada
 
+        HBox.setHgrow(keskmisedNupud, Priority.ALWAYS);
+        HBox.setHgrow(parempoolsedNupud, Priority.ALWAYS);
+
+        keskmisedNupud.setAlignment(Pos.CENTER);
+        parempoolsedNupud.setAlignment(Pos.CENTER_RIGHT);
+
+        keskmisedNupud.setSpacing(nuppudeVahe);//Teeb keskel asuvatele nuppudele vahed
+        parempoolsedNupud.setSpacing(nuppudeVahe);//Teeb paremal asuvatele nuppudele vahed
+
+        valikuteriba.getItems().addAll(keskmisedNupud);
 
         mang.setScene(manguStseen);
         mang.show();//ava aken
@@ -106,64 +159,7 @@ public class Laud {
 
         genereeriPildid();
         reageeriKlikile();
-
-//Eventhandler EI TÖÖTA!
-        alustaMangu.setOnAction(new EventHandler() {  //Button event handler
-
-                    public void handle(ActionEvent event) {
-                        if (timeline!= null) {
-                            timeline.stop();
-                        }
-                        timeSeconds = STARTTIME;
-
-                        // update timerLabel
-                        timerLabel.setText(timeSeconds.toString());
-                        timeline = new Timeline();
-                        timeline.setCycleCount(Timeline.INDEFINITE);
-                        timeline.getKeyFrames().add(
-                                new KeyFrame(Duration.seconds(1),
-                                        new EventHandler() {
-                                            // KeyFrame event handler
-                                            public void handle(ActionEvent event) {
-                                                timeSeconds--;
-                                                // update timerLabel
-                                                timerLabel.setText(
-                                                        timeSeconds.toString());
-                                                if (timeSeconds <= 0) {
-                                                    timeline.stop();
-                                                }
-                                            }
-                                        }));
-                        timeline.playFromStart();
-                    }
-                });
-
-        }
-  /*      //Taimer
-        ktimer = new KTimer();
-        timeLabel = new Label(ktimer.getSspTime().get());
-        ktimer.getSspTime().addListener(new InvalidationListener() {
-
-            @Override
-            public void invalidated(Observable observable) {
-                timeLabel.setText(ktimer.getSspTime().get());
-            }
-        });
-
-
-        //Taimer hakkab tööle, kui vajutada nuppu "Alusta mängu", siit samast nupust saab ka pausi peale panna.alustaMangu.setOnAction(e -> {
-            ktimer.startTimer(ktimer.getTime());
-        });
-
-        //Peata taimer
-        stop.setOnAction(e -> {
-            ktimer.stopTimer();
-        });
-*/
-
-
-
-
+    }
 
     //klikile reageerimise meetod
     private void reageeriKlikile() {
@@ -173,49 +169,85 @@ public class Laud {
             Rectangle kaart = (Rectangle) event.getTarget();
 
             //võtame kasutusse rectangeli vanema ehk pildi
-            Pilt pilt = (Pilt) kaart.getParent();
+            pilt = (Pilt) kaart.getParent();
             System.out.println(pilt);
 
             //kui pilt on juba avatud, siis ära tee midagi (ütleb konsoolis, et on juba avatud)
             if (pilt.piltOnAvatud())
                 return;
 
-            //kui ühtegi pili ei ole avatud siis avab esimese, kui üks on juba avatud siis avab teise
-            //EI JÄTA PAARE AVATUKS
-            if (!kasVahemaltUksPiltOnAvatud()) {
-                System.out.println("ühtegi pilti ei ole veel avatud");
+            //kui esimenePilt ei ole avatud siis avab esimese, kui esimene on juba avatud, siis avab teise ja kontrollib paari tekkimist
+            if (esimenePilt == null) {
                 pilt.avaEsimenePilt(() -> {
                     esimenePilt = pilt;
                     System.out.println(esimenePilt);
-                    System.out.println(esimenePilt.getId());
                 });
-            } else if (kasVahemaltUksPiltOnAvatud()) {
-                System.out.println("vähemalt üks pilt on juba avatud");
+            } else if (esimenePilt.piltOnAvatud()) {
                 pilt.avaTeinePilt(() -> {
                     System.out.println(pilt);
-                    System.out.println(pilt.getId());
-                    if (!esimenePilt.number.getText().equals(pilt.number.getText())) {
-                        System.out.println("Ei ole paar!");
+                    if (!kasTekkisPaar()) {
                         esimenePilt.peidaPilt();
                         pilt.peidaPilt();
-
-                    } else {
-                        System.out.println("Paar!");
-                        esimenePilt.setId("Arvatud");
-                        System.out.println(esimenePilt);
-                        pilt.setId("Arvatud");
-                        System.out.println(pilt);
                     }
+                    esimenePilt=null;
                 });
             }
-
         });
         //sule mängu alguses kõik pildid
         suleKoikPildid();
     }
 
+    //kui kõik paarid on leitud, siis mäng läbi
+    public void gameover() {
+        Label mangLabiTekst = new Label("Tubli, leidsid kõik paarid!\n" + "MÄNG LÄBI!");
+        mangLabiTekst.setFont(new Font(50));
+        mangLabiTekst.setTextFill(Color.ORANGE);
+        mangLabiTekst.setAlignment(Pos.CENTER);
+        maailm.setCenter(mangLabiTekst);
+    }
 
+    //kontrollib kas kõik paarid on leitud
+    public boolean kasKoikPaaridOnLeitud () {
+        return leitudPaarideLugeja == paarideArv;
+    }
 
+    //kontrollib kas tekkis paar ja tegutseb vastavalt
+    public boolean kasTekkisPaar () {
+        if (esimenePilt.number.getText().equals(pilt.number.getText())) {
+            System.out.println("Leidsid paari!");
+            esimenePilt.setId("Arvatud");
+            pilt.setId("Arvatud");
+            esimenePilt.vilgutaPildiPiirjooni();
+            pilt.vilgutaPildiPiirjooni();
+            leitudPaarideLugeja++;
+            if (kasKoikPaaridOnLeitud()) {
+                gameover();
+            }
+            System.out.println(kasKoikPaaridOnLeitud());
+            System.out.println(leitudPaarideLugeja);
+            return true;
+        }
+        System.out.println("See ei ole paar!");
+        return false;
+    }
+
+    /*//kontrollib kas tekkis paar
+    public void kasTekkisPaar () {
+        if (esimenePilt.number.getText().equals(pilt.number.getText())) {
+            System.out.println("Paar!");
+            esimenePilt.setId("Arvatud");
+            pilt.setId("Arvatud");
+            System.out.println(esimenePilt.getId());
+            System.out.println(pilt.getId());
+            esimenePilt.vilgutaPildiPiirjooni();
+            pilt.vilgutaPildiPiirjooni();
+        } else {
+            System.out.println("Ei ole paar!");
+            esimenePilt.peidaPilt();
+            pilt.peidaPilt();
+        }
+        esimenePilt = null;
+    }*/
 
     //küsib pildi klassist iga pildi käest kas ta on avatud
     public boolean kasVahemaltUksPiltOnAvatud() {
@@ -228,13 +260,12 @@ public class Laud {
         return false;//if käib kõik pildid läbi ja kui ei jõudnud tulemuseni, et mingi pilt oleks avatud, siis tuleb siia
     }
 
-    /*//kutsub pildi klassist meetodi avaPilt
-    public void avaPilt () {
+    //kutsub pildi klassist meetodi avaPilt
+    public void avaKoikPildid () {
         for (Pilt pilt : pildid) {
-            pilt.avaEsimenePilt(() -> {
-            });
+            pilt.avaEsimenePilt(() -> {});
         }
-    }*/
+    }
 
     //kutsub pildi klaasist meetodi peidaPilt
     public void suleKoikPildid() {
@@ -269,4 +300,3 @@ public class Laud {
         }
     }
 }
-
