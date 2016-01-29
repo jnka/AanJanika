@@ -1,5 +1,7 @@
 package MemoryGame;
 
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -16,14 +18,15 @@ public class Mang {
         Mangija mangija = new Mangija();
 
         //Mängu sisu.
-        while (!laud.kasKoikPaaridOnLeitud()) {
+        /*while (!laud.kasKoikPaaridOnLeitud()) {
+            laud.reageeriKlikile();
             boolean paar = laud.kasTekkisPaar();
             if (paar) {
                 mangija.paar();
             } else {
                 mangija.arvamata();
             }
-        }
-        mangija.gameover();
+        }*/
+        //mangija.gameover();
     }
 }
