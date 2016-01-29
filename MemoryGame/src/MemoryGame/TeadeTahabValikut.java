@@ -1,4 +1,4 @@
-package memoryGame;
+package MemoryGame;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,7 +9,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * Created by Janika.Aan on 17.01.2016.
+ * Created by janikaa on 17.01.2016.
  */
 public class TeadeTahabValikut {
     static boolean vastus;
