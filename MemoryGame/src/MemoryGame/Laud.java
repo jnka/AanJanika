@@ -4,21 +4,21 @@ package MemoryGame;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -34,20 +34,28 @@ public class Laud {
     Stage mang;//klassimuutuja, klassis igalpool kättesaadav
     BorderPane maailm;
     GridPane laud;//klassimuutuja, klassis igalpool kättesaadav
+
     private int pildiKylg = 150;
     private int laualRidasid = 4;
     private int laualTulpasid = laualRidasid;
     private int paarideArv = (laualRidasid*laualTulpasid)/2;
     private int leitudPaarideLugeja = 0;
     private int piltideVaheLauas = 5;
-    private int nuppudeVahe = 10;
     private int piksleidLai = pildiKylg*laualTulpasid+(laualTulpasid*piltideVaheLauas);
     private int piksleidKorge = pildiKylg*laualRidasid+(laualRidasid*piltideVaheLauas)+40;
 
-    ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
-    public Pilt pilt;
-    public Pilt esimenePilt = null;
+    private ArrayList<Pilt> pildid = new ArrayList<>(paarideArv);
+    private Pilt pilt;
+    private Pilt esimenePilt = null;
 
+    private ToolBar valikuteriba;
+    private HBox keskmisedNupud;
+    private HBox parempoolsedNupud;
+    private int nuppudeVahe = 10;
+
+    private Timeline animatsioon;
+    private int sekundid = 0;
+    private Text taimeriTekst = new Text(sekundid + "");
 
 
     public Laud () {
@@ -125,21 +133,26 @@ public class Laud {
         menuuRiba.getMenus().addAll(tegevused, spikker);
 
         //VALIKUTERIBA
-        ToolBar valikuteriba = new ToolBar();
+        valikuteriba = new ToolBar();
         maailm.setBottom(valikuteriba);
 
-        //Valikuteriba nupp "Alusta mängu"
-        Button alustaManguNupp = new Button("Alusta mängu");
-        alustaManguNupp.setOnMouseEntered(event1 -> alustaManguNupp.setEffect(new DropShadow()));
-        alustaManguNupp.setOnMouseExited(event1 -> alustaManguNupp.setEffect(null));
+        //Valikuteriba nupp "Alusta uut mängu"
+        Button alustaUutManguNupp = new Button("Alusta uut mängu");
+        alustaUutManguNupp.setOnMouseEntered(event1 -> alustaUutManguNupp.setEffect(new DropShadow()));
+        alustaUutManguNupp.setOnMouseExited(event1 -> alustaUutManguNupp.setEffect(null));
+        alustaUutManguNupp.setOnAction(event2 -> new Mang());
 
-        //Valikuteriba nupp "Paus"
-        Button pausNupp = new Button("Paus");
-        pausNupp.setOnMouseEntered(event1 -> pausNupp.setEffect(new DropShadow()));
-        pausNupp.setOnMouseExited(event1 -> pausNupp.setEffect(null));
+        //Valikuteriba nupp "Sule mäng"
+        Button suleMangNupp = new Button("Sulge mäng");
+        suleMangNupp.setOnMouseEntered(event1 -> suleMangNupp.setEffect(new DropShadow()));
+        suleMangNupp.setOnMouseExited(event1 -> suleMangNupp.setEffect(null));
+        suleMangNupp.setOnAction(event1 -> System.exit(0));
 
-        HBox keskmisedNupud = new HBox(alustaManguNupp, pausNupp);//Teeme HBoxi ja paneme nupud sisse, et saaks need valikuterea keskele asetada
-        HBox parempoolsedNupud = new HBox();//Teeme HBoxi ja paneme taimeri sisse, et saaks selle valikutereal paremale asetada
+        //Valikuteriba label "Aeg"
+        Label taimer = new Label("Aeg:");
+
+        keskmisedNupud = new HBox(alustaUutManguNupp, suleMangNupp);//Teeme HBoxi ja paneme nupud sisse, et saaks need valikuterea keskele asetada
+        parempoolsedNupud = new HBox(taimer, taimeriTekst);//Teeme HBoxi ja paneme taimeri sisse, et saaks selle valikutereal paremale asetada
 
         HBox.setHgrow(keskmisedNupud, Priority.ALWAYS);
         HBox.setHgrow(parempoolsedNupud, Priority.ALWAYS);
@@ -150,11 +163,20 @@ public class Laud {
         keskmisedNupud.setSpacing(nuppudeVahe);//Teeb keskel asuvatele nuppudele vahed
         parempoolsedNupud.setSpacing(nuppudeVahe);//Teeb paremal asuvatele nuppudele vahed
 
-        valikuteriba.getItems().addAll(keskmisedNupud);
+        valikuteriba.getItems().addAll(parempoolsedNupud);
 
         mang.setScene(manguStseen);
         mang.show();//ava aken
         mang.setOnCloseRequest(event -> System.exit(0));//akna sulgedes läheb programm kinni
+
+        //Taimer
+        animatsioon = new Timeline(
+                new KeyFrame(Duration.millis(1000), event -> {
+                    sekundid++;
+                    taimeriTekst.setText(sekundid + "");
+                })
+        );
+        animatsioon.setCycleCount(Timeline.INDEFINITE);
 
 
         genereeriPildid();
@@ -162,15 +184,15 @@ public class Laud {
     }
 
     //klikile reageerimise meetod
-    private void reageeriKlikile() {
+    public void reageeriKlikile() {
         laud.setOnMouseClicked(event -> {
+            animatsioon.play();
 
             //event.getTarget teab millisele rectagelile ehk kaardile klikiti
             Rectangle kaart = (Rectangle) event.getTarget();
 
             //võtame kasutusse rectangeli vanema ehk pildi
             pilt = (Pilt) kaart.getParent();
-            System.out.println(pilt);
 
             //kui pilt on juba avatud, siis ära tee midagi (ütleb konsoolis, et on juba avatud)
             if (pilt.piltOnAvatud())
@@ -185,11 +207,7 @@ public class Laud {
             } else if (esimenePilt.piltOnAvatud()) {
                 pilt.avaTeinePilt(() -> {
                     System.out.println(pilt);
-                    if (!kasTekkisPaar()) {
-                        esimenePilt.peidaPilt();
-                        pilt.peidaPilt();
-                    }
-                    esimenePilt=null;
+                    kasTekkisPaar();
                 });
             }
         });
@@ -199,11 +217,14 @@ public class Laud {
 
     //kui kõik paarid on leitud, siis mäng läbi
     public void gameover() {
-        Label mangLabiTekst = new Label("Tubli, leidsid kõik paarid!\n" + "MÄNG LÄBI!");
+        Label mangLabiTekst = new Label("Tubli, leidsid kõik paarid!\n" + "MÄNG LÄBI!\n" + "Mängu aeg: " + sekundid + " sekundit");
+        mangLabiTekst.setTextAlignment(TextAlignment.CENTER);
         mangLabiTekst.setFont(new Font(50));
         mangLabiTekst.setTextFill(Color.ORANGE);
         mangLabiTekst.setAlignment(Pos.CENTER);
         maailm.setCenter(mangLabiTekst);
+        valikuteriba.getItems().remove(parempoolsedNupud);
+        valikuteriba.getItems().addAll(keskmisedNupud);
     }
 
     //kontrollib kas kõik paarid on leitud
@@ -212,7 +233,7 @@ public class Laud {
     }
 
     //kontrollib kas tekkis paar ja tegutseb vastavalt
-    public boolean kasTekkisPaar () {
+    public void kasTekkisPaar () {
         if (esimenePilt.number.getText().equals(pilt.number.getText())) {
             System.out.println("Leidsid paari!");
             esimenePilt.setId("Arvatud");
@@ -221,14 +242,22 @@ public class Laud {
             pilt.vilgutaPildiPiirjooni();
             leitudPaarideLugeja++;
             if (kasKoikPaaridOnLeitud()) {
-                gameover();
+                animatsioon.stop();
+                Timeline ootaManguLopuTeavitusega = new Timeline(
+                        new KeyFrame(Duration.seconds(2), event -> {
+                            gameover();
+                        })
+                );
+                ootaManguLopuTeavitusega.play();
             }
             System.out.println(kasKoikPaaridOnLeitud());
             System.out.println(leitudPaarideLugeja);
-            return true;
+        } else {
+            System.out.println("See ei ole paar!");
+            esimenePilt.peidaPilt();
+            pilt.peidaPilt();
         }
-        System.out.println("See ei ole paar!");
-        return false;
+        esimenePilt = null;
     }
 
     //küsib pildi klassist iga pildi käest kas ta on avatud
