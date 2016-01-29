@@ -1,8 +1,11 @@
 package MemoryGame;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.StrokeTransition;
 import javafx.animation.Timeline;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -14,7 +17,7 @@ import javafx.util.Duration;
  * Created by janikaa on 8.01.2016.
  */
 public class Pilt extends StackPane {
-    public Rectangle kaart = new Rectangle();//teeb kaardi
+    private Rectangle kaart = new Rectangle();//teeb kaardi
     private int pildiKylg = 150;
     public Text number = new Text();
 
