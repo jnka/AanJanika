@@ -10,15 +10,18 @@ import java.time.Duration;
 /**
  * Created by janikaa on 10.12.2015.
  */
-public class MemoryGame extends Application {
-    //Stage mang;//klassimuutuja, klassis igalpool kättesaadav
+public class MemoryGame extends Application{
 
-    @Override //märge, mis ütleb, et käesolev meetod on super klassist (Application) üle kirjutatud.
+    @Override
     public void start(Stage primaryStage) throws Exception {
         new Mang();//käivitame mängu, siia saab hiljem uusi mängijaid luua, uusi Mange lisades
-
     }
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }
+
 
 /*
 *Iga klass või objekt: 1) hoiab mingit infot (teab infot, muutuja); 2) teeb midagi (oskab midagi teha, meetod).
